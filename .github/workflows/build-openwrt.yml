@@ -16,10 +16,10 @@ on:
       - 'config/x64.config'
       - '.github/workflows/*'
       
-  schedule:
-    - cron: 0 */12 * * *
+#  schedule:
+#    - cron: 0 */12 * * *
     
-  repository_dispatch:
+#  repository_dispatch:
   
   workflow_dispatch:
 

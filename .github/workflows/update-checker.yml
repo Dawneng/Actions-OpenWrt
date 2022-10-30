@@ -16,12 +16,12 @@ env:
   REPO_BRANCH: master
 
 on:
-  schedule:
+#  schedule:
     # 每日凌晨2时开始
-    - cron:  '0 18 * * *'
+#    - cron:  '0 18 * * *'
     
-  watch:
-    types: started
+#  watch:
+#    types: started
   
  #  push:
  #    branches:

@@ -62,26 +62,26 @@ jobs:
 
     - name: Preparation before building
       run: |
-        sudo -E apt-get -y install xsltproc zip grep python3-pip python3-ply libc6-dev libncurses5 libtinfo-dev libtinfo5 ncurses-doc python2.7 git-core wget curl rsync
+        sudo -E apt-get -y install xsltproc zip grep python3-pip python3-ply libc6-dev libncurses5 libtinfo-dev libtinfo5 ncurses-doc python2.7 git-core wget curl rsync clang
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
         sudo timedatectl set-timezone "$TZ"
-        echo
-        echo " 系统空间      类型   总数  已用  可用 使用率"
         df -hT $PWD
 
-    - name: 释放Ubuntu磁盘空间
+    - name: Free Disk Space
       uses: jlumbroso/free-disk-space@main
       with:
         # this might remove tools that are actually needed,
         # if set to "true" but frees about 6 GB
-        tool-cache: true
+        tool-cache: false
+
         # all of these default to true, but feel free to set to
         # "false" if necessary for your workflow
         android: true
         dotnet: true
         haskell: true
         large-packages: true
+        docker-images: true
         swap-storage: true
 
     - name: Clone source code
@@ -105,7 +105,20 @@ jobs:
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
+      run: |
+        cd openwrt && ./scripts/feeds update -a && rm -rf feeds/luci/applications/luci-app-mosdns
+        rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,v2ray*,sing*,smartdns}
+        rm -rf feeds/packages/utils/v2dat
+        rm -rf feeds/packages/lang/golang
+        rm -rf ./feeds/packages/kenzo/luci-app-openclash
+        git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
+        git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff ./feeds/packages/kenzo/luci-app-poweroff
+        git clone -b dev --depth=1 https://github.com/vernesong/OpenClash ../OpenClash
+        git clone --depth=1 https://github.com/destan19/OpenAppFilter ../OpenAppFilter
+        cp -r ../OpenClash/luci-app-openclash ./feeds/packages/kenzo/ && rm -rf ../OpenClash
+        cp -r ../OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./feeds/packages/kenzo/ && rm -rf ../OpenAppFilter
+        ./scripts/feeds update -a
+
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
@@ -194,7 +207,7 @@ jobs:
       uses: dev-drprasad/delete-older-releases@master
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-        keep_latest: 3
+        keep_latest: 12
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

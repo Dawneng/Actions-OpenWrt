@@ -110,7 +110,8 @@ jobs:
         rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,v2ray*,sing*,smartdns}
         rm -rf feeds/packages/utils/v2dat
         rm -rf feeds/packages/lang/golang
-        rm -rf ./feeds/kenzo/{luci-app-openclash,UnblockNeteaseMusic}
+        rm -rf ./feeds/kenzo/UnblockNeteaseMusic
+        rm -rf ./feeds/small/luci-app-openclash
         git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
         git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff ./feeds/kenzo/luci-app-poweroff
         git clone -b dev --depth=1 https://github.com/vernesong/OpenClash ../OpenClash

@@ -102,6 +102,7 @@ jobs:
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
+        git reset --hard 2f58aa600642ce3b47fa79d35e9e94f922b8b2a4
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update feeds
